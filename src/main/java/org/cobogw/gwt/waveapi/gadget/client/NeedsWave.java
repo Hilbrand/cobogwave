@@ -21,7 +21,7 @@ import com.google.gwt.gadgets.client.GadgetFeature.FeatureName;
  * Indicates that a Gadget requires the Google Wave feature.
  * http://wave-api.appspot.com/public/wave.js
  */
-@FeatureName("wave-preview")
+@FeatureName("wave")
 public interface NeedsWave {
   /**
    * Entry point that gets called back to handle wave feature initialization.
