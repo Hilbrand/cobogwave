@@ -121,7 +121,7 @@ public class WaveFeature implements GadgetFeature {
    *          id of the participant to retrieve
    * @return The participant with the given id
    */
-  public native JsArray<Participant> getParticipantById(String id) /*-{
+  public native Participant getParticipantById(String id) /*-{
     return $wnd.wave.getParticipantById(id);
   }-*/;
 
