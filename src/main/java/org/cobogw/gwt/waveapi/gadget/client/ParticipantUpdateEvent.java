@@ -57,6 +57,7 @@ public class ParticipantUpdateEvent extends GwtEvent<ParticipantUpdateEventHandl
     handler.onUpdate(this);
   }
 
+  @SuppressWarnings("unchecked")
   public Type<ParticipantUpdateEventHandler> getAssociatedType() {
     return (Type) TYPE;
   }
