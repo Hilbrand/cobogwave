@@ -1,0 +1,13 @@
+#summary Release Notes
+#labels Featured
+
+== V1.0.3.2 - October 3, 2009 ==
+  * Fixed issue 2.
+  * Added method `reset` to State class.
+  * Added method `log` to WaveFeature .
+
+== V1.0.3.1 - September 7, 2009 ==
+  * Changed feature name from `wave-preview` to `wave`.
+
+== V1.0.3 - August 4, 2009 ==
+  * Initial release.
