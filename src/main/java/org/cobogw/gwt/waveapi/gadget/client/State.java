@@ -12,7 +12,7 @@ public class State extends JavaScriptObject {
 
   /**
    * JavaScript version of map.
-   * 
+   *
    * @param <V>
    *          value type
    */
@@ -42,7 +42,7 @@ public class State extends JavaScriptObject {
   /**
    * Retrieve a value from the synchronized state. As of now, get always returns
    * a string. This will change at some point to return whatever was set.
-   * 
+   *
    * @param key
    *          Value for the specified key to retrieve.
    */
@@ -52,7 +52,7 @@ public class State extends JavaScriptObject {
 
   /**
    * Retrieve a value from the synchronized state and returns it as an Integer.
-   * 
+   *
    * @param key
    *          Value for the specified key to retrieve.
    * @return
@@ -66,7 +66,7 @@ public class State extends JavaScriptObject {
   /**
    * Retrieve a value from the synchronized state. As of now, get always returns
    * a string. This will change at some point to return whatever was set.
-   * 
+   *
    * @param key
    *          Value for the specified key to retrieve.
    * @param opt_default
@@ -78,18 +78,22 @@ public class State extends JavaScriptObject {
 
   /**
    * Retrieve the valid keys for the synchronized state.
-   * 
+   *
    * @return set of keys
    */
   public final native JsArrayString getKeys() /*-{
     return this.getKeys();
   }-*/;
 
+  public final native void reset() /*-{
+    this.reset();
+  }-*/;
+
   /**
    * Updates the state delta. This is an asynchronous call that will update the
    * state and not take effect immediately. Creating any key with a null value
    * will attempt to delete the key.
-   * 
+   *
    * @param delta
    *          Map of key-value pairs representing a delta of keys to update
    */
@@ -106,14 +110,14 @@ public class State extends JavaScriptObject {
    * Updates the state delta. This is an asynchronous call that will update the
    * state and not take effect immediately. Creating any key with a null value
    * will attempt to delete the key.
-   * 
+   *
    * @param delta
    *          Map of key-value pairs representing a delta of keys to update
    */
   public final native void submitDelta(JavaScriptObject delta) /*-{
     this.submitDelta(delta);
   }-*/;
-  
+
   public final native void submitValue(String key, String value) /*-{
     this.submitValue(key, value);
   }-*/;
