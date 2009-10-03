@@ -1,12 +1,12 @@
 /*
  * Copyright 2009 Hilbrand Bouwkamp, hs@bouwkamp.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -27,7 +27,7 @@ public class Participant extends JavaScriptObject {
 
   /**
    * Gets the unique identifier of this participant.
-   * 
+   *
    * @return The participant's id
    */
   public final native String getId() /*-{
@@ -36,7 +36,7 @@ public class Participant extends JavaScriptObject {
 
   /**
    * Gets the unique identifier of this participant.
-   * 
+   *
    * @return The participant's display name
    */
   public final native String getDisplayName() /*-{
@@ -45,7 +45,7 @@ public class Participant extends JavaScriptObject {
 
   /**
    * Gets the url of the thumbnail image for this participant.
-   * 
+   *
    * @return The participant's thumbnail image url.
    */
   public final native String getThumbnailUrl() /*-{

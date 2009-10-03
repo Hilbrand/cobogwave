@@ -178,6 +178,10 @@ public class WaveFeature implements GadgetFeature {
     return $wnd.wave.isPlayback();
   }-*/;
 
+  public native void log(String log) /*-{
+    return $wnd.wave.log(log);
+  }-*/;
+
   /**
    * Outputs JSON objects in text format. Optionally pretty print.
    *
