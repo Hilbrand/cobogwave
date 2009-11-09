@@ -19,6 +19,9 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HasHandlers;
 
+/**
+ * Event fired when participants on the wave change. 
+ */
 public class ParticipantUpdateEvent extends GwtEvent<ParticipantUpdateEventHandler> {
 
   /**
