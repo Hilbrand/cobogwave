@@ -1,6 +1,13 @@
 #summary Release Notes
 #labels Featured
 
+== V1.0.3.3 - November 9, 2009 ==
+ * Fixed bug of getHost(), which returned the viewer.
+ * Added !ModeChangeEvent and handler for listening to mode change events.
+ * Refactored Mode to use native values instead of hard coded values.
+ * Simplified handler implementation to use a single handler bus.
+ * Added base class to start new wave Gadget.
+
 == V1.0.3.2 - October 3, 2009 ==
   * Fixed issue 2.
   * Added method `reset` to State class.
