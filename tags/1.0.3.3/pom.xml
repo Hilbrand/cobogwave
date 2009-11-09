@@ -6,7 +6,7 @@
   <artifactId>cobogwave-gadget</artifactId>
   <packaging>jar</packaging>
   <name>The Cobogw Wave Gadget API wrapper Library</name>
-  <version>1.0.3.2</version>
+  <version>1.0.3.3</version>
   <description>
     The Cobogw Wave library is a GWT wrapper for the Google Wave Gadget API.
   </description>
