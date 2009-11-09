@@ -19,52 +19,53 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HasHandlers;
 
 /**
- * Event fired when wave state changes.  
+ * Event fired when the wave mode changes. 
  */
-public class StateUpdateEvent extends GwtEvent<StateUpdateEventHandler> {
+public class ModeChangeEvent extends GwtEvent<ModeChangeEventHandler> {
 
   /**
    * Handler type.
    */
-  private static Type<StateUpdateEventHandler> TYPE;
-  private final WaveFeature wave;
+  private static Type<ModeChangeEventHandler> TYPE;
 
   /**
    * Gets the type associated with this event.
    *
    * @return returns the handler type
    */
-  public static Type<StateUpdateEventHandler> getType() {
+  public static Type<ModeChangeEventHandler> getType() {
     if (TYPE == null) {
-      TYPE = new Type<StateUpdateEventHandler>();
+      TYPE = new Type<ModeChangeEventHandler>();
     }
     return TYPE;
   }
 
-  static StateUpdateEvent fire(HasHandlers source, WaveFeature wave) {
+  static ModeChangeEvent fire(HasHandlers source, int mode) {
     // If no handlers exist, then type can be null.
     if (TYPE != null) {
-      final StateUpdateEvent event = new StateUpdateEvent(wave);
+      final ModeChangeEvent event = new ModeChangeEvent(mode);
       source.fireEvent(event);
       return event;
     }
     return null;
   }
 
-  public StateUpdateEvent(WaveFeature wave) {
-    this.wave = wave;
+  private int mode;
+
+  private ModeChangeEvent(int mode) {
+    this.mode = mode;
   }
 
-  protected void dispatch(StateUpdateEventHandler handler) {
+  protected void dispatch(ModeChangeEventHandler handler) {
     handler.onUpdate(this);
   }
 
   @SuppressWarnings("unchecked")
-  public Type<StateUpdateEventHandler> getAssociatedType() {
+  public Type<ModeChangeEventHandler> getAssociatedType() {
     return (Type) TYPE;
   }
 
-  public State getState() {
-    return wave.getState();
+  public int getMode() {
+    return mode;
   }
 }

@@ -17,7 +17,6 @@ package org.cobogw.gwt.waveapi.gadget.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
@@ -28,46 +27,80 @@ import com.google.gwt.gadgets.client.GadgetFeature;
  */
 public class WaveFeature implements GadgetFeature {
 
+  /**
+   * @deprecated Use {@link Mode} class instead. It uses the native wave
+   * JavaScript values instead of fixed integer values.
+   */
+  @Deprecated
   public class Mode {
+    /**
+     * @deprecated Use {@link Mode#UNKNOWN}.
+     */
+    @Deprecated
     public static final int UNKNOWN = 0;
+    /**
+     * @deprecated Use {@link Mode#VIEW}.
+     */
+    @Deprecated
     public static final int VIEW = 1;
+    /**
+     * @deprecated Use {@link Mode#EDIT}.
+     */
+    @Deprecated
     public static final int EDIT = 2;
+    /**
+     * @deprecated Use {@link Mode#DIFF_ON_OPEN}.
+     */
+    @Deprecated
     public static final int DIFF_ON_OPEN = 3;
+    /**
+     * @deprecated Use {@link Mode#PLAYBACK}.
+     */
+    @Deprecated
     public static final int PLAYBACK = 4;
   }
 
-  private static HandlerManager pHandler;
-  private static HasHandlers pHasHandlers;
-  private static HandlerManager sHandler;
-  private static HasHandlers sHasHandlers;
+  private static class WaveEventBus extends HandlerManager
+      implements HasHandlers {
+
+    /**
+     * Creates a handler manager with the given source. Handlers will be fired
+     * in the order that they are added.
+     * 
+     * @param source the event source
+     */
+    public WaveEventBus(Object source) {
+      super(source);
+    }
+
+    /**
+     * Creates a handler manager with the given source, specifying the order in
+     * which handlers are fired.
+     * 
+     * @param source the event source
+     * @param fireInReverseOrder true to fire handlers in reverse order
+     */
+    public WaveEventBus(Object source, boolean fireInReverseOrder) {
+      super(source, fireInReverseOrder);
+    }
+  }
+
+  private static WaveEventBus waveEventBus;
   private static WaveFeature wave;
 
   private WaveFeature(){
   }
 
   /**
-   * Adds a {@link ParticipantUpdateEvent} handler.
+   * Adds a {@link ModeChangeEvent} handler.
    *
    * @param handler
    *          the handler
    * @return the registration for the event
    */
-
-  public HandlerRegistration addParticipantUpdateEventHandler(
-      ParticipantUpdateEventHandler handler) {
-    if (wave == null) {
-      wave = this;
-    }
-    if (pHandler == null) {
-      pHasHandlers = new HasHandlers() {
-        public void fireEvent(GwtEvent<?> event) {
-          pHandler.fireEvent(event);
-        }
-      };
-      pHandler = new HandlerManager(pHasHandlers);
-      registerParticipantUpdateCallback();
-    }
-    return pHandler.addHandler(ParticipantUpdateEvent.getType(), handler);
+  public HandlerRegistration addModeUpdateEventHandler(
+      ModeChangeEventHandler handler) {
+    return ensureWaveEventBus().addHandler(ModeChangeEvent.getType(), handler);
   }
 
   /**
@@ -77,22 +110,21 @@ public class WaveFeature implements GadgetFeature {
    *          the handler
    * @return the registration for the event
    */
+  public HandlerRegistration addParticipantUpdateEventHandler(
+          ParticipantUpdateEventHandler handler) {
+    return ensureWaveEventBus().addHandler(ParticipantUpdateEvent.getType(), handler);
+  }
 
+  /**
+   * Adds a {@link ParticipantUpdateEvent} handler.
+   *
+   * @param handler
+   *          the handler
+   * @return the registration for the event
+   */
   public HandlerRegistration addStateUpdateEventHandler(
       StateUpdateEventHandler handler) {
-    if (wave == null) {
-      wave = this;
-    }
-    if (sHandler == null) {
-      sHasHandlers = new HasHandlers() {
-        public void fireEvent(GwtEvent<?> event) {
-          sHandler.fireEvent(event);
-        }
-      };
-      sHandler = new HandlerManager(sHasHandlers);
-      registerStateUpdateCallback();
-    }
-    return sHandler.addHandler(StateUpdateEvent.getType(), handler);
+    return ensureWaveEventBus().addHandler(StateUpdateEvent.getType(), handler);
   }
 
   /**
@@ -102,7 +134,7 @@ public class WaveFeature implements GadgetFeature {
    * @return host (null if not known)
    */
   public native Participant getHost() /*-{
-    return $wnd.wave.getViewer();
+    return $wnd.wave.getHost();
   }-*/;
 
   /**
@@ -206,6 +238,15 @@ public class WaveFeature implements GadgetFeature {
   }-*/;
 
   /**
+   * Sets the mode change callback.
+   */
+  @SuppressWarnings("unused")
+  private native void setModeCallback(String callback,
+      JavaScriptObject opt_context) /*-{
+    $wnd.wave.setModeCallback(callback, opt_context);
+  }-*/;
+
+  /**
    * Sets the participant update callback. If the participant information is
    * already received, the callback is invoked immediately to report the current
    * participant information. Only one callback can be defined. Consecutive
@@ -213,7 +254,7 @@ public class WaveFeature implements GadgetFeature {
    */
   @SuppressWarnings("unused")
   private native void setParticipantCallback(String callback,
-      JavaScriptObject opt_context) /*-{
+          JavaScriptObject opt_context) /*-{
     $wnd.wave.setParticipantCallback(callback, opt_context);
   }-*/;
 
@@ -230,18 +271,34 @@ public class WaveFeature implements GadgetFeature {
   }-*/;
 
   /**
-   * Register the stateUpdated method to be called when the state changes.
+   * Register the mode change method to be called when the mode changes.
+   */
+  private native void registerModeChangeCallback() /*-{
+    $wnd.wave.setModeCallback(@org.cobogw.gwt.waveapi.gadget.client.WaveFeature::modeChangeEvent(I));
+  }-*/;
+
+  /**
+   * Register the participantUpdated method to be called when the participants
+   * are updated.
    */
   private native void registerParticipantUpdateCallback() /*-{
     $wnd.wave.setParticipantCallback(@org.cobogw.gwt.waveapi.gadget.client.WaveFeature::participantUpdateEvent());
   }-*/;
 
   /**
-   * Register the stateUpdated method to be called when the state changes.
+   * Register the stateUpdated method to be called when the state is updated.
    */
   private native void registerStateUpdateCallback() /*-{
     $wnd.wave.setStateCallback(@org.cobogw.gwt.waveapi.gadget.client.WaveFeature::stateUpdateEvent());
   }-*/;
+
+  /**
+   * This method is called from the wave JavaScript library on Mode changes.
+   */
+  @SuppressWarnings("unused")
+  private static void modeChangeEvent(int mode) {
+    ModeChangeEvent.fire(waveEventBus, mode);
+  }
 
   /**
    * This method is called from the wave JavaScript library on Participant
@@ -249,7 +306,7 @@ public class WaveFeature implements GadgetFeature {
    */
   @SuppressWarnings("unused")
   private static void participantUpdateEvent() {
-    ParticipantUpdateEvent.fire(pHasHandlers, wave);
+    ParticipantUpdateEvent.fire(waveEventBus, wave);
   }
 
   /**
@@ -257,7 +314,26 @@ public class WaveFeature implements GadgetFeature {
    */
   @SuppressWarnings("unused")
   private static void stateUpdateEvent() {
-    StateUpdateEvent.fire(sHasHandlers, wave);
+    StateUpdateEvent.fire(waveEventBus, wave);
+  }
+
+  /**
+   * Helper method to initialize the waveEventBus and registers all the handlers
+   * with the native wave JavaScript library.
+   *
+   * @return a HandleManager
+   */
+  private HandlerManager ensureWaveEventBus() {
+    if (wave == null) {
+      wave = this;
+    }
+    if (waveEventBus == null) {
+      waveEventBus = new WaveEventBus(this);
+      registerModeChangeCallback();
+      registerParticipantUpdateCallback();
+      registerStateUpdateCallback();
+    }
+    return waveEventBus;
   }
 
   private native double getTime0() /*-{
