@@ -193,6 +193,15 @@ public class WaveFeature implements GadgetFeature {
   }-*/;
 
   /**
+   * Returns serialized wave ID or null if not known.
+   *
+   * @return serialized wave ID or null if not known
+   */
+  public native String getWaveId() /*-{
+    return $wnd.wave.getWaveId();
+  }-*/;
+
+  /**
    * Indicates whether the gadget runs inside a wave container.
    *
    * @return whether the gadget runs inside a wave container

@@ -4,13 +4,12 @@ wave.Callback = function(b, c) {
   this.context_ = c || null
 };
 wave.Callback.prototype.invoke = function() {
-  if(this.callback_) {
-    var b = Array.prototype.slice.call(wave.Callback.prototype.invoke.arguments, 0);
-    this.callback_.apply(this.context_, b)
-  }
+  this.callback_ && this.callback_.apply(this.context_, arguments)
 };
 wave.Mode = {UNKNOWN:0, VIEW:1, EDIT:2, DIFF_ON_OPEN:3, PLAYBACK:4};
-wave.PARAM_NAME_ = "wave";
+wave.API_PARAM_ = "wave";
+wave.ID_PARAM_ = "waveId";
+wave.id_ = null;
 wave.viewer_ = null;
 wave.host_ = null;
 wave.participants_ = [];
@@ -21,9 +20,9 @@ wave.stateCallback_ = new wave.Callback(null);
 wave.mode_ = null;
 wave.modeCallback_ = new wave.Callback(null);
 wave.inWaveContainer_ = false;wave.util = wave.util || {};
-wave.util.SPACES = "                                                 ";
+wave.util.SPACES_ = "                                                 ";
 wave.util.toSpaces_ = function(b) {
-  return wave.util.SPACES.substring(0, b * 2)
+  return wave.util.SPACES_.substring(0, b * 2)
 };
 wave.util.isArray_ = function(b) {
   try {
@@ -37,25 +36,23 @@ wave.util.printJson = function(b, c, e) {
     if(typeof b == "string")return"'" + b + "'";
     else if(b instanceof Function)return"[function]";
     return"" + b
-  }var d = [], f = wave.util.isArray_(b), g = f ? "[]" : "{}", h = c ? "\n" : "", k = c ? " " : "", l = 0;
+  }var d = [], f = wave.util.isArray_(b), h = f ? "[]" : "{}", g = c ? "\n" : "", j = c ? " " : "", k = 0;
   e = e || 1;
   c || (e = 0);
-  d.push(g.charAt(0));
+  d.push(h.charAt(0));
   for(var i in b) {
-    var j = b[i];
-    l++ > 0 && d.push(", ");
-    if(f)d.push(wave.util.printJson(j, c, e + 1));
-    else {
-      d.push(h);
+    var l = b[i];
+    k++ > 0 && d.push(", ");
+    if(!f) {
+      d.push(g);
       d.push(wave.util.toSpaces_(e));
       d.push(i + ": ");
-      d.push(k);
-      d.push(wave.util.printJson(j, c, e + 1))
-    }
+      d.push(j)
+    }d.push(wave.util.printJson(l, c, e + 1))
   }if(!f) {
-    d.push(h);
+    d.push(g);
     d.push(wave.util.toSpaces_(e - 1))
-  }d.push(g.charAt(1));
+  }d.push(h.charAt(1));
   return d.join("")
 };wave.Participant = function(b, c, e) {
   this.id_ = b || "";
@@ -82,7 +79,8 @@ wave.Participant.fromJson_ = function(b) {
 };
 a = wave.State.prototype;
 a.get = function(b, c) {
-  return this.state_[b] || c || null
+  if(b in this.state_)return this.state_[b];
+  return c === undefined ? null : c
 };
 a.getKeys = function() {
   var b = [];
@@ -109,7 +107,8 @@ a.toString = function() {
   return wave.util.printJson(this.state_, true)
 };wave.checkWaveContainer_ = function() {
   var b = gadgets.util.getUrlParameters();
-  wave.inWaveContainer_ = b.hasOwnProperty(wave.PARAM_NAME_) && b[wave.PARAM_NAME_]
+  wave.inWaveContainer_ = b.hasOwnProperty(wave.API_PARAM_) && b[wave.API_PARAM_];
+  wave.id_ = b.hasOwnProperty(wave.ID_PARAM_) && b[wave.ID_PARAM_]
 };
 wave.isInWaveContainer = function() {
   return wave.inWaveContainer_
@@ -186,6 +185,9 @@ wave.getTime = function() {
 wave.log = function(b) {
   gadgets.rpc.call(null, "wave_log", null, b || "")
 };
+wave.getWaveId = function() {
+  return wave.id_
+};
 wave.internalInit_ = function() {
   wave.checkWaveContainer_();
   if(wave.isInWaveContainer()) {
@@ -199,4 +201,25 @@ wave.internalInit_ = function() {
   window.gadgets && gadgets.util.registerOnLoadHandler(function() {
     wave.internalInit_()
   })
-})();
+})();var tamings___ = tamings___ || [], caja___, ___;
+tamings___.push(function(b) {
+  function c(e, d) {
+    var f = {apply:___.markFuncFreeze(function(h, g) {
+      return ___.callPub(e, "apply", [d, g])
+    })};
+    return new wave.Callback(f, ___.USELESS)
+  }
+  ___.grantRead(wave, "Mode");
+  c.prototype = wave.Callback.prototype;
+  wave.Callback.prototype.constructor = c;
+  ___.markCtor(c, Object, "Callback");
+  ___.primFreeze(c);
+  ___.tamesTo(wave.Callback, c);
+  ___.hanleGenericMethod(c.prototype, "invoke", function() {
+    return ___.callPub(this.callback_, "apply", [___.tame(this.context_), Array.slice(arguments, 0)])
+  });
+  caja___.whitelistCtors([[wave, "Participant", Object], [wave, "State", Object]]);
+  caja___.whitelistMeths([[wave.Participant, "getDisplayName"], [wave.Participant, "getId"], [wave.Participant, "getThumbnailUrl"], [wave.State, "get"], [wave.State, "getKeys"], [wave.State, "reset"], [wave.State, "submitDelta"], [wave.State, "submitValue"], [wave.State, "toString"]]);
+  caja___.whitelistFuncs([[wave, "getHost"], [wave, "getMode"], [wave, "getParticipantById"], [wave, "getParticipants"], [wave, "getState"], [wave, "getTime"], [wave, "getViewer"], [wave, "isInWaveContainer"], [wave, "log"], [wave, "setModeCallback"], [wave, "setParticipantCallback"], [wave, "setStateCallback"], [wave.util, "printJson"]]);
+  b.outers.wave = ___.tame(wave)
+});
