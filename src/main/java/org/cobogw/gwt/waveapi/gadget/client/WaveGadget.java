@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Hilbrand Bouwkamp, hs@bouwkamp.com
+ * Copyright 2009-2010 Hilbrand Bouwkamp, hs@bouwkamp.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -35,7 +35,7 @@ public abstract class WaveGadget<T extends UserPreferences> extends Gadget<T>
   public final void initializeFeature(WaveFeature feature) {
     wave = feature;
   }
-  
+
   /**
    * Returns the wave object.
    * 
