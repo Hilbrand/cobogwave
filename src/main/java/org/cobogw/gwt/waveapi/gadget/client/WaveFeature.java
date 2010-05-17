@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Hilbrand Bouwkamp, hs@bouwkamp.com
+ * Copyright 2009-2010 Hilbrand Bouwkamp, hs@bouwkamp.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -116,17 +116,29 @@ public class WaveFeature implements GadgetFeature {
   }
 
   /**
-   * Adds a {@link ParticipantUpdateEvent} handler.
+   * Adds a {@link PrivateStateUpdateEvent} handler.
+   *
+   * @param handler
+   *          the handler
+   * @return the registration for the event
+   */
+  public HandlerRegistration addPrivateStateUpdateEventHandler(
+          PrivateStateUpdateEventHandler handler) {
+    return ensureWaveEventBus().addHandler(PrivateStateUpdateEvent.getType(), handler);
+  }
+
+  /**
+   * Adds a {@link StateUpdateEvent} handler.
    *
    * @param handler
    *          the handler
    * @return the registration for the event
    */
   public HandlerRegistration addStateUpdateEventHandler(
-      StateUpdateEventHandler handler) {
+          StateUpdateEventHandler handler) {
     return ensureWaveEventBus().addHandler(StateUpdateEvent.getType(), handler);
   }
-
+  
   /**
    * Get host, participant who added this gadget to the blip. Note that the host
    * may no longer be in the participant list.
@@ -167,12 +179,19 @@ public class WaveFeature implements GadgetFeature {
   }-*/;
 
   /**
-   * @return Returns a list of participants on the Wave
+   * @return Returns the global state object.
    */
   public native State getState() /*-{
     return $wnd.wave.getState();
   }-*/;
 
+  /**
+   * @return Returns the private state object.
+   */
+  public native PrivateState getPrivateState() /*-{
+    return $wnd.wave.getPrivateState();
+  }-*/;
+  
   /**
    * Retrieves "gadget time" which is either the playback frame time in the
    * playback mode or the current time otherwise.
@@ -268,6 +287,18 @@ public class WaveFeature implements GadgetFeature {
   }-*/;
 
   /**
+   * Sets the gadget private state update callback. If the state is already
+   * received from the container, the callback is invoked immediately to report
+   * the current gadget state. Only one callback can be defined. Consecutive
+   * calls would remove the old callback and set the new one.
+   */
+  @SuppressWarnings("unused")
+  private native void setPrivateStateCallback(String callback,
+      JavaScriptObject opt_context) /*-{
+    $wnd.wave.setPrivateStateCallback(callback, opt_context);
+  }-*/;
+
+  /**
    * Sets the gadget state update callback. If the state is already received
    * from the container, the callback is invoked immediately to report the
    * current gadget state. Only one callback can be defined. Consecutive calls
@@ -275,7 +306,7 @@ public class WaveFeature implements GadgetFeature {
    */
   @SuppressWarnings("unused")
   private native void setStateCallback(String callback,
-      JavaScriptObject opt_context) /*-{
+          JavaScriptObject opt_context) /*-{
     $wnd.wave.setStateCallback(callback, opt_context);
   }-*/;
 
@@ -295,12 +326,20 @@ public class WaveFeature implements GadgetFeature {
   }-*/;
 
   /**
+   * Register the privateStateUpdated method to be called when the private state
+   * is updated.
+   */
+  private native void registerPrivateStateUpdateCallback() /*-{
+    $wnd.wave.setPrivateStateCallback(@org.cobogw.gwt.waveapi.gadget.client.WaveFeature::privateStateUpdateEvent());
+  }-*/;
+
+  /**
    * Register the stateUpdated method to be called when the state is updated.
    */
   private native void registerStateUpdateCallback() /*-{
     $wnd.wave.setStateCallback(@org.cobogw.gwt.waveapi.gadget.client.WaveFeature::stateUpdateEvent());
   }-*/;
-
+  
   /**
    * This method is called from the wave JavaScript library on Mode changes.
    */
@@ -316,6 +355,15 @@ public class WaveFeature implements GadgetFeature {
   @SuppressWarnings("unused")
   private static void participantUpdateEvent() {
     ParticipantUpdateEvent.fire(waveEventBus, wave);
+  }
+
+  /**
+   * This method is called from the wave JavaScript library on Private State
+   * changes.
+   */
+  @SuppressWarnings("unused")
+  private static void privateStateUpdateEvent() {
+    PrivateStateUpdateEvent.fire(waveEventBus, wave);
   }
 
   /**
@@ -340,6 +388,7 @@ public class WaveFeature implements GadgetFeature {
       waveEventBus = new WaveEventBus(this);
       registerModeChangeCallback();
       registerParticipantUpdateCallback();
+      registerPrivateStateUpdateCallback();
       registerStateUpdateCallback();
     }
     return waveEventBus;
