@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Hilbrand Bouwkamp, hs@bouwkamp.com
+ * Copyright 2009-2010 Hilbrand Bouwkamp, hs@bouwkamp.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -25,7 +25,12 @@ import com.google.gwt.gadgets.client.GadgetFeature.FeatureName;
 public interface NeedsWave {
   /**
    * Entry point that gets called back to handle wave feature initialization.
-   *
+   * 
+   * Don't access the participant or state objects this method. the method is
+   * called when the gadget loads. You use this function to confirm that the
+   * wave is live and to register your callbacks. You should not attempt to
+   * access the participant or state objects.
+   * 
    * @param feature
    *          an instance of the feature to use to invoke feature specific
    *          methods.
