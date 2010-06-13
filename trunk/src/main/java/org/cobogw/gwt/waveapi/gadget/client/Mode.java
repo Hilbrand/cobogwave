@@ -47,22 +47,22 @@ public class Mode {
   public static final int PLAYBACK = nativePLAYBACK();
 
   private native static int nativeUNKNOWN() /*-{
-    return $win.wave.Mode.UNKNOWN;
+    return $wnd.wave.Mode.UNKNOWN;
   }-*/;
 
   private native static int nativeVIEW() /*-{
-    return $win.wave.Mode.VIEW;
+    return $wnd.wave.Mode.VIEW;
   }-*/;
 
   private native static int nativeEDIT() /*-{
-    return $win.wave.Mode.EDIT;
+    return $wnd.wave.Mode.EDIT;
   }-*/;
 
   private native static int nativeDIFF_ON_OPEN() /*-{
-    return $win.wave.Mode.DIFF_ON_OPEN;
+    return $wnd.wave.Mode.DIFF_ON_OPEN;
   }-*/;
 
   private native static int nativePLAYBACK() /*-{
-    return $win.wave.Mode.PLAYBACK;
+    return $wnd.wave.Mode.PLAYBACK;
   }-*/;
 }
