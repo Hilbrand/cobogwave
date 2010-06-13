@@ -1,6 +1,9 @@
 #summary Release Notes
 #labels Featured
 
+== V1.1.1 - June 13, 2010 ==
+ * Fixed issue 10.
+
 == V1.1 - May 17, 2010 ==
  * Added support for Private State.
  * Added support for Wave ui widgets: Button, DialogBox and DecoratedSimplePanel.
