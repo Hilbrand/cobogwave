@@ -38,9 +38,11 @@ public class State extends JavaScriptObject {
       return JavaScriptObject.createObject().cast();
     }
 
+    @SuppressWarnings("unused")
     protected JsMap() {
     }
 
+    @SuppressWarnings("unused")
     public final native V unsafeGet(String key) /*-{
       return this[key];
     }-*/;
