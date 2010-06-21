@@ -300,6 +300,11 @@ public class DialogBox extends PopupPanel implements HasHTML {
   }
 
   @Override
+  public void setWidget(Widget w) {
+    body.setWidget(w);
+  }
+
+  @Override
   public void show() {
     if (resizeHandlerRegistration == null) {
       resizeHandlerRegistration = Window.addResizeHandler(new ResizeHandler() {
