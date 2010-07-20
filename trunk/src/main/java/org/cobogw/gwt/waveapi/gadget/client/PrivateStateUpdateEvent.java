@@ -61,7 +61,7 @@ public class PrivateStateUpdateEvent extends GwtEvent<PrivateStateUpdateEventHan
     return (Type) TYPE;
   }
 
-  public State getState() {
-    return wave.getState();
+  public PrivateState PrivateState() {
+    return wave.getPrivateState();
   }
 }
