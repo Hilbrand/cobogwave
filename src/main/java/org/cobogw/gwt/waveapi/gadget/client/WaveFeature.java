@@ -66,7 +66,7 @@ public class WaveFeature implements GadgetFeature {
     /**
      * Creates a handler manager with the given source. Handlers will be fired
      * in the order that they are added.
-     * 
+     *
      * @param source the event source
      */
     public WaveEventBus(Object source) {
@@ -76,7 +76,7 @@ public class WaveFeature implements GadgetFeature {
     /**
      * Creates a handler manager with the given source, specifying the order in
      * which handlers are fired.
-     * 
+     *
      * @param source the event source
      * @param fireInReverseOrder true to fire handlers in reverse order
      */
@@ -88,7 +88,7 @@ public class WaveFeature implements GadgetFeature {
   private static WaveEventBus waveEventBus;
   private static WaveFeature wave;
 
-  private WaveFeature(){
+  private WaveFeature() {
   }
 
   /**
@@ -138,7 +138,7 @@ public class WaveFeature implements GadgetFeature {
           StateUpdateEventHandler handler) {
     return ensureWaveEventBus().addHandler(StateUpdateEvent.getType(), handler);
   }
-  
+
   /**
    * Get host, participant who added this gadget to the blip. Note that the host
    * may no longer be in the participant list.
@@ -191,7 +191,7 @@ public class WaveFeature implements GadgetFeature {
   public native PrivateState getPrivateState() /*-{
     return $wnd.wave.getPrivateState();
   }-*/;
-  
+
   /**
    * Retrieves "gadget time" which is either the playback frame time in the
    * playback mode or the current time otherwise.
@@ -243,26 +243,37 @@ public class WaveFeature implements GadgetFeature {
   }-*/;
 
   /**
-   * Outputs JSON objects in text format. Optionally pretty print.
+   * Outputs JSON objects in pretty print text format.
    *
    * @param obj The object to print.
    * @param opt_tabs Number of tabs to start indent
    * @return
    */
   public native String printJson(JavaScriptObject obj, int opt_tabs)  /*-{
-    return $wnd.util.printJson(obj, opt_pretty, opt_tabs);
+    return $wnd.wave.util.printJson(obj, true, opt_tabs);
   }-*/;
 
   /**
-   * Outputs JSON objects in text format. Optionally pretty print.
+   * Outputs JSON objects in text format.
    *
    * @param obj The object to print.
-   * @param opt_pretty If true
+   * @param opt_pretty If true pretty prints the output
    * @param opt_tabs Number of tabs to start indent
    * @return Outputs JSON objects in text format
    */
-  public native String printJson(JavaScriptObject obj, boolean opt_pretty, int opt_tabs)  /*-{
-    return $wnd.util.printJson(obj, opt_pretty, opt_tabs);
+  public native String printJson(JavaScriptObject obj, boolean opt_pretty,
+      int opt_tabs)  /*-{
+    return $wnd.wave.util.printJson(obj, opt_pretty, opt_tabs);
+  }-*/;
+
+  /**
+   * Shows the snippet in the digest. Use this to communicate when your gadget
+   * changes.
+   *
+   * @param snippet Snippet to show
+   */
+  public native void setSnippet(String snippet) /*-{
+    $wnd.wave.setSnippet(snippet);
   }-*/;
 
   /**
@@ -330,16 +341,16 @@ public class WaveFeature implements GadgetFeature {
    * is updated.
    */
   private native void registerPrivateStateUpdateCallback() /*-{
-    $wnd.wave.setPrivateStateCallback(@org.cobogw.gwt.waveapi.gadget.client.WaveFeature::privateStateUpdateEvent());
+    $wnd.wave.setPrivateStateCallback(@org.cobogw.gwt.waveapi.gadget.client.WaveFeature::privateStateUpdateEvent(Lorg/cobogw/gwt/waveapi/gadget/client/PrivateState;Lorg/cobogw/gwt/waveapi/gadget/client/PrivateState;));
   }-*/;
 
   /**
    * Register the stateUpdated method to be called when the state is updated.
    */
   private native void registerStateUpdateCallback() /*-{
-    $wnd.wave.setStateCallback(@org.cobogw.gwt.waveapi.gadget.client.WaveFeature::stateUpdateEvent());
+    $wnd.wave.setStateCallback(@org.cobogw.gwt.waveapi.gadget.client.WaveFeature::stateUpdateEvent(Lorg/cobogw/gwt/waveapi/gadget/client/State;Lorg/cobogw/gwt/waveapi/gadget/client/State;));
   }-*/;
-  
+
   /**
    * This method is called from the wave JavaScript library on Mode changes.
    */
@@ -362,16 +373,17 @@ public class WaveFeature implements GadgetFeature {
    * changes.
    */
   @SuppressWarnings("unused")
-  private static void privateStateUpdateEvent() {
-    PrivateStateUpdateEvent.fire(waveEventBus, wave);
+  private static void privateStateUpdateEvent(PrivateState privateState,
+      PrivateState delta) {
+    PrivateStateUpdateEvent.fire(waveEventBus, wave, delta);
   }
 
   /**
    * This method is called from the wave JavaScript library on State changes.
    */
   @SuppressWarnings("unused")
-  private static void stateUpdateEvent() {
-    StateUpdateEvent.fire(waveEventBus, wave);
+  private static void stateUpdateEvent(State state, State delta) {
+    StateUpdateEvent.fire(waveEventBus, wave, delta);
   }
 
   /**

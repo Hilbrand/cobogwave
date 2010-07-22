@@ -18,13 +18,13 @@ package org.cobogw.gwt.waveapi.gadget.client;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HasHandlers;
 
-public class PrivateStateUpdateEvent extends GwtEvent<PrivateStateUpdateEventHandler> {
+public class PrivateStateUpdateEvent
+    extends GwtEvent<PrivateStateUpdateEventHandler> {
 
   /**
    * Handler type.
    */
   private static Type<PrivateStateUpdateEventHandler> TYPE;
-  private final WaveFeature wave;
 
   /**
    * Gets the type associated with this event.
@@ -38,18 +38,25 @@ public class PrivateStateUpdateEvent extends GwtEvent<PrivateStateUpdateEventHan
     return TYPE;
   }
 
-  static PrivateStateUpdateEvent fire(HasHandlers source, WaveFeature wave) {
+  static PrivateStateUpdateEvent fire(HasHandlers source, WaveFeature wave,
+      PrivateState delta) {
     // If no handlers exist, then type can be null.
     if (TYPE != null) {
-      final PrivateStateUpdateEvent event = new PrivateStateUpdateEvent(wave);
+      final PrivateStateUpdateEvent event =
+          new PrivateStateUpdateEvent(wave, delta);
+
       source.fireEvent(event);
       return event;
     }
     return null;
   }
 
-  public PrivateStateUpdateEvent(WaveFeature wave) {
+  private final WaveFeature wave;
+  private final PrivateState delta;
+
+  private PrivateStateUpdateEvent(WaveFeature wave, PrivateState delta) {
     this.wave = wave;
+    this.delta = delta;
   }
 
   protected void dispatch(PrivateStateUpdateEventHandler handler) {
@@ -61,7 +68,15 @@ public class PrivateStateUpdateEvent extends GwtEvent<PrivateStateUpdateEventHan
     return (Type) TYPE;
   }
 
+  public PrivateState getDelta() {
+    return delta;
+  }
+
   public PrivateState getPrivateState() {
     return wave.getPrivateState();
+  }
+  
+  public WaveFeature getWave() {
+    return wave;
   }
 }
