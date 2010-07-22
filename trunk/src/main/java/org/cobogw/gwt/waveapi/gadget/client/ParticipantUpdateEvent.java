@@ -68,4 +68,8 @@ public class ParticipantUpdateEvent extends GwtEvent<ParticipantUpdateEventHandl
   public JsArray<Participant> getParticipants() {
     return wave.getParticipants();
   }
+
+  public WaveFeature getWave() {
+    return wave;
+  }
 }

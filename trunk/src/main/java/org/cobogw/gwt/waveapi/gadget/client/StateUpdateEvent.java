@@ -27,7 +27,6 @@ public class StateUpdateEvent extends GwtEvent<StateUpdateEventHandler> {
    * Handler type.
    */
   private static Type<StateUpdateEventHandler> TYPE;
-  private final WaveFeature wave;
 
   /**
    * Gets the type associated with this event.
@@ -41,18 +40,24 @@ public class StateUpdateEvent extends GwtEvent<StateUpdateEventHandler> {
     return TYPE;
   }
 
-  static StateUpdateEvent fire(HasHandlers source, WaveFeature wave) {
+  static StateUpdateEvent fire(HasHandlers source, WaveFeature wave,
+      State delta) {
     // If no handlers exist, then type can be null.
     if (TYPE != null) {
-      final StateUpdateEvent event = new StateUpdateEvent(wave);
+      final StateUpdateEvent event = new StateUpdateEvent(wave, delta);
+
       source.fireEvent(event);
       return event;
     }
     return null;
   }
 
-  public StateUpdateEvent(WaveFeature wave) {
+  private final WaveFeature wave;
+  private final State delta;
+
+  private StateUpdateEvent(WaveFeature wave, State delta) {
     this.wave = wave;
+    this.delta = delta;
   }
 
   protected void dispatch(StateUpdateEventHandler handler) {
@@ -64,7 +69,15 @@ public class StateUpdateEvent extends GwtEvent<StateUpdateEventHandler> {
     return (Type) TYPE;
   }
 
+  public State getDelta() {
+    return delta;
+  }
+
   public State getState() {
     return wave.getState();
+  }
+
+  public WaveFeature getWave() {
+    return wave;
   }
 }
