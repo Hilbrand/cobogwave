@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.DialogBox.Caption;
  * <pre>
  *   &lt;div class="wavedialog">
  *     &lt;div class="wavedialoghead">
- *       &lt;span> header &lt;/span>
+ *       &lt;span>&lt;div class="wavedialogclose">&lt;/div> header &lt;/span>
  *     &lt;/div>
  *     &lt;div class="wavedialogbody"> body &lt;/div>
  *   &lt;/div>
