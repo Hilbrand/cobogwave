@@ -50,13 +50,16 @@
       <version>${gwt.version}</version>
       <scope>provided</scope>
     </dependency>
-<!-- 
     <dependency>
+    <!--
+       If the gwt-gadgets is not yet in a or your local repository, download
+       and install it with the following command:
+       mvn install:install-file -Dpackaging=jar -DgroupId=com.google.gwt.google-apis -DartifactId=gwt-gadgets -Dversion=1.2 -Dfile=gwt-gadgets.jar     
+     -->
       <groupId>com.google.gwt.google-apis</groupId>
       <artifactId>gwt-gadgets</artifactId>
       <version>1.2</version>
     </dependency>
- -->
   </dependencies>
   <build>
     <resources>
