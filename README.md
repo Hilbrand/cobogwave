@@ -1,3 +1,7 @@
+This project is not maintained anymore.
+
+--- 
+
 The [Google Wave Gadget API](http://code.google.com/apis/wave/extensions/gadgets/reference.html) is an extension to the Gadget API. This project is created to wrap the Wave Gadget API in Java classes to be able to program Gadgets with GWT. The following document provided by Google can help with [Debugging Wave Gadgets](http://docs.google.com/View?id=dggjrx3s_166cfhms9gd).
 
 ### How to use ###
